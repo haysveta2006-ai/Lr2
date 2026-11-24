@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "Person.h"
 #include <cstring>
 #include <iostream>
@@ -12,21 +13,21 @@ char* Person::copyString(const char* s) {
 
 Person::Person()
     : surname(copyString("")), name(copyString("")) {
-    std::cout << "Person(): конструктор без параметров\n";
+    std::cout << "Person(): default constructor\n";
 }
 
 Person::Person(const char* s, const char* n)
     : surname(copyString(s)), name(copyString(n)) {
-    std::cout << "Person(const char*, const char*): конструктор с параметрами\n";
+    std::cout << "Person(const char*, const char*): parameterized constructor\n";
 }
 
 Person::Person(const Person& other)
     : surname(copyString(other.surname)), name(copyString(other.name)) {
-    std::cout << "Person(const Person&): конструктор копирования\n";
+    std::cout << "Person(const Person&): copy constructor\n";
 }
 
 Person::~Person() {
-    std::cout << "~Person(): деструктор для "
+    std::cout << "~Person(): destructor for "
         << (surname ? surname : "") << " "
         << (name ? name : "") << "\n";
     delete[] surname;
@@ -46,13 +47,8 @@ Person& Person::operator=(const Person& other) {
     return *this;
 }
 
-const char* Person::getSurname() const {
-    return surname ? surname : "";
-}
-
-const char* Person::getName() const {
-    return name ? name : "";
-}
+const char* Person::getSurname() const { return surname ? surname : ""; }
+const char* Person::getName() const { return name ? name : ""; }
 
 void Person::setSurname(const char* s) {
     char* tmp = copyString(s);

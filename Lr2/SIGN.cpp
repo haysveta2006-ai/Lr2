@@ -17,30 +17,28 @@ bool SIGN::validDate(int d, int m, int y) {
 
 SIGN::SIGN()
     : Person(), zodiac(copyString("")), birthDate{ 1, 1, 2000 } {
-    std::cout << "SIGN(): конструктор без параметров\n";
+    std::cout << "SIGN(): default constructor\n";
 }
 
-SIGN::SIGN(const char* s, const char* n, const char* z,
-    int d, int m, int y)
+SIGN::SIGN(const char* s, const char* n, const char* z, int d, int m, int y)
     : Person(s, n), zodiac(copyString(z)), birthDate{ d, m, y } {
     if (!validDate(d, m, y)) {
         delete[] zodiac;
         zodiac = nullptr;
-        throw std::invalid_argument("Некорректная дата рождения");
+        throw std::invalid_argument("Invalid birth date");
     }
-    std::cout << "SIGN(...): конструктор с параметрами\n";
+    std::cout << "SIGN(...): parameterized constructor\n";
 }
 
 SIGN::SIGN(const SIGN& other)
     : Person(other),
     zodiac(copyString(other.zodiac)),
     birthDate{ other.birthDate[0], other.birthDate[1], other.birthDate[2] } {
-    std::cout << "SIGN(const SIGN&): конструктор копирования\n";
+    std::cout << "SIGN(const SIGN&): copy constructor\n";
 }
 
 SIGN::~SIGN() {
-    std::cout << "~SIGN(): деструктор для "
-        << getSurname() << " " << getName() << "\n";
+    std::cout << "~SIGN(): destructor for " << getSurname() << " " << getName() << "\n";
     delete[] zodiac;
 }
 
@@ -48,25 +46,19 @@ SIGN& SIGN::operator=(const SIGN& other) {
     std::cout << "SIGN::operator=\n";
     if (this != &other) {
         Person::operator=(other);
-
         char* z = copyString(other.zodiac);
         delete[] zodiac;
         zodiac = z;
-
         for (int i = 0; i < 3; ++i)
             birthDate[i] = other.birthDate[i];
     }
     return *this;
 }
 
-const char* SIGN::getZodiac() const {
-    return zodiac ? zodiac : "";
-}
+const char* SIGN::getZodiac() const { return zodiac ? zodiac : ""; }
 
 void SIGN::getBirthDate(int& d, int& m, int& y) const {
-    d = birthDate[0];
-    m = birthDate[1];
-    y = birthDate[2];
+    d = birthDate[0]; m = birthDate[1]; y = birthDate[2];
 }
 
 void SIGN::setZodiac(const char* z) {
@@ -77,17 +69,13 @@ void SIGN::setZodiac(const char* z) {
 
 void SIGN::setBirthDate(int d, int m, int y) {
     if (!validDate(d, m, y))
-        throw std::invalid_argument("Некорректная дата рождения");
-    birthDate[0] = d;
-    birthDate[1] = m;
-    birthDate[2] = y;
+        throw std::invalid_argument("Invalid birth date");
+    birthDate[0] = d; birthDate[1] = m; birthDate[2] = y;
 }
 
 bool SIGN::operator<(const SIGN& other) const {
-    if (birthDate[2] != other.birthDate[2])
-        return birthDate[2] < other.birthDate[2];
-    if (birthDate[1] != other.birthDate[1])
-        return birthDate[1] < other.birthDate[1];
+    if (birthDate[2] != other.birthDate[2]) return birthDate[2] < other.birthDate[2];
+    if (birthDate[1] != other.birthDate[1]) return birthDate[1] < other.birthDate[1];
     return birthDate[0] < other.birthDate[0];
 }
 
@@ -97,8 +85,7 @@ bool SIGN::surnameEquals(const char* s) const {
 
 void SIGN::print(std::ostream& os) const {
     Person::print(os);
-    os << ", знак: " << getZodiac()
-        << ", дата рождения: "
+    os << ", zodiac: " << getZodiac() << ", birth date: "
         << birthDate[0] << "." << birthDate[1] << "." << birthDate[2];
 }
 
@@ -110,16 +97,12 @@ std::ostream& operator<<(std::ostream& os, const SIGN& s) {
 std::istream& operator>>(std::istream& is, SIGN& s) {
     std::string sur, nm, z;
     int d, m, y;
-
     if (!(is >> sur >> nm >> z >> d >> m >> y)) {
-        throw std::runtime_error(
-            "Ошибка ввода SIGN. Формат: Фамилия Имя Знак ДД ММ ГГГГ");
+        throw std::runtime_error("SIGN input error. Format: Surname Name Zodiac DD MM YYYY");
     }
-
     s.setSurname(sur.c_str());
     s.setName(nm.c_str());
     s.setZodiac(z.c_str());
     s.setBirthDate(d, m, y);
-
     return is;
 }
